@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import Dropzone from "react-dropzone";
 import { Icon } from "antd";
 import Axios from "axios";
 
-function FileUpload() {
+function FileUpload(props) {
+  const [Images, setImages] = useState([]);
+
   const onDrop = (files) => {
     let formData = new FormData();
     const config = {
@@ -15,6 +17,8 @@ function FileUpload() {
     Axios.post("/api/product/uploadImage", formData, config).then(
       (response) => {
         if (response.data.success) {
+          setImages([...Images, response.data.image]); //adds image(s)
+          props.refreshFunction([...Images, response.data.image]); //updates to product page
         } else {
           alert("Failed Image Save");
         }
@@ -24,7 +28,7 @@ function FileUpload() {
 
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <Dropzone onDrop={onDrop} multiple maxSize>
+      <Dropzone onDrop={onDrop} multiple={false} maxSize={1000000}>
         {({ getRootProps, getInputProps }) => (
           <div
             style={{

@@ -20,6 +20,7 @@ function UploadProductPage() {
   const [DescriptionValue, setDescriptionValue] = useState("");
   const [PriceValue, setPriceValue] = useState(0);
   const [SizeValue, setSizeValue] = useState(0);
+  const [Images, setImages] = useState([]);
 
   const onTitleChange = (event) => {
     setTitleValue(event.currentTarget.value);
@@ -37,6 +38,11 @@ function UploadProductPage() {
     setSizeValue(event.currentTarget.value);
   };
 
+  const updateImages = (newImages) => {
+    console.log(newImages);
+    setImages(newImages);
+  };
+
   return (
     <div style={{ maxWidth: "700px", margin: "2rem" }}>
       <div style={{ textAlign: "center", marginBottom: "2rem" }}>
@@ -44,7 +50,7 @@ function UploadProductPage() {
       </div>
 
       <Form onSubmit>
-        <FileUpload />
+        <FileUpload refreshFunction={updateImages} />
         <br />
         <br />
         <label>Title</label>
@@ -70,9 +76,6 @@ function UploadProductPage() {
         </select>
         <br />
         <br />
-        <select key value>
-          <option key value></option>
-        </select>
 
         <Button>Submit</Button>
       </Form>
