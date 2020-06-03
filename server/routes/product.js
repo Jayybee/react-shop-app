@@ -8,7 +8,7 @@ const { auth } = require("../middleware/auth");
 //saves file name and filter to uploads folder
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads");
+    cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}_${file.originalname}`);
@@ -27,7 +27,7 @@ var upload = multer({ storage: storage }).single("file");
 //            Product
 //=================================
 
-router.get("/uploadImage", auth, (req, res) => {
+router.post("/uploadImage", auth, (req, res) => {
   //get image file
   //save to backend Node
 
