@@ -26,6 +26,17 @@ function FileUpload(props) {
     );
   };
 
+  //gets targeted image uploaded
+  const onDelete = (image) => {
+    const currentindex = Images.indexOf(image); //gets the index of image from the state
+
+    let newImages = [...Images]; //changing newImages instead of state
+    newImages.splice(currentindex, 1);
+
+    setImages(newImages); //update state w/ the newImages
+    props.refreshFunction(newImages);
+  };
+
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
       <Dropzone onDrop={onDrop} multiple={false} maxSize={1000000}>
@@ -54,9 +65,15 @@ function FileUpload(props) {
           overflowX: "scroll",
         }}
       >
-        <div onClick>
-          <img />
-        </div>
+        {Images.map((image, index) => (
+          <div onClick={() => onDelete(image)}>
+            <img
+              style={{ minWidth: "300px", width: "300px", height: "240px" }}
+              src={`http://localhost:5000/${image}`}
+              alt={`productImg-${index}`}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
