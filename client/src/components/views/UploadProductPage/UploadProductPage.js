@@ -1,8 +1,7 @@
-import Axios from "axios";
+import axios from "axios";
 import React, { useState } from "react";
 import { Typography, Button, Form, message, Input, Icon } from "antd";
 import FileUpload from "../../utils/FileUpload";
-import { response } from "express";
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -58,7 +57,7 @@ function UploadProductPage(props) {
       images: Images,
     };
 
-    Axios.post("/api/product/uploadProduct", variables).then((response) => {
+    axios.post("/api/product/uploadProduct", variables).then((response) => {
       if (response.data.success) {
         alert("Product posted!");
         props.history.push("/");
@@ -92,9 +91,9 @@ function UploadProductPage(props) {
         <br />
         <label>Size</label>
         <br />
-        <select onChange={onSizeChange} value={SizeValue}>
+        <select onChange={onSizeChange}>
           {Sizes.map((item) => (
-            <option key={item.key} value={item.value}>
+            <option key={item.key} value={item.key}>
               {item.value}
             </option>
           ))}
