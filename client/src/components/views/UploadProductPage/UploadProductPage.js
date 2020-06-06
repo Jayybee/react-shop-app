@@ -48,6 +48,10 @@ function UploadProductPage(props) {
   const onSubmit = (event) => {
     event.preventDefault();
 
+    if (!TitleValue || !DescriptionValue || !PriceValue || !Images) {
+      return alert("Please complete all required fields!");
+    }
+
     const variables = {
       writer: props.user.userData._id,
       title: TitleValue,
