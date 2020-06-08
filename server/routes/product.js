@@ -53,7 +53,7 @@ router.post("/uploadProduct", auth, (req, res) => {
   });
 });
 
-router.post("/getProducts", auth, (req, res) => {
+router.post("/getProducts", (req, res) => {
   //gets all avail product data
 
   let order = req.body.order ? req.body.order : "desc";
