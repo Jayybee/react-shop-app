@@ -10,6 +10,7 @@ function LandingPage() {
   const [Products, setProducts] = useState([]);
   const [Skip, setSkip] = useState(0);
   const [Limit, setLimit] = useState(8);
+  const [PostSize, setPostSize] = useState(0); //PostSize state for showing load more button
 
   useEffect(() => {
     //fetch product data
@@ -25,7 +26,9 @@ function LandingPage() {
   const getProducts = (variables) => {
     axios.post("/api/product/getProducts", variables).then((response) => {
       if (response.data.success) {
-        setProducts(response.data.products);
+        setProducts([...Products, ...response.data.products]);
+
+        setPostSize(response.data.postSize);
 
         console.log(response.data.products);
       } else {
@@ -42,6 +45,8 @@ function LandingPage() {
       limit: Limit,
     };
     getProducts(variables);
+
+    setSkip(skip);
   };
 
   const renderCards = Products.map((product, index) => {
@@ -84,9 +89,13 @@ function LandingPage() {
       )}
       <br />
       <br />
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <button onClick={onLoadMore}>Load More</button>
-      </div>
+
+      {/* Post*/}
+      {PostSize >= Limit && (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <button onClick={onLoadMore}>Load More</button>
+        </div>
+      )}
     </div>
   );
 }
