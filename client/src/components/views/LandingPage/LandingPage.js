@@ -8,10 +8,22 @@ const { Meta } = Card;
 function LandingPage() {
   //create a state for product list
   const [Products, setProducts] = useState([]);
+  const [Skip, setSkip] = useState(0);
+  const [Limit, setLimit] = useState(8);
 
   useEffect(() => {
     //fetch product data
-    axios.post("/api/product/getProducts").then((response) => {
+
+    const variables = {
+      skip: Skip,
+      limit: Limit,
+    };
+
+    getProducts(variables);
+  }, []);
+
+  const getProducts = (variables) => {
+    axios.post("/api/product/getProducts", variables).then((response) => {
       if (response.data.success) {
         setProducts(response.data.products);
 
@@ -20,7 +32,17 @@ function LandingPage() {
         alert("Failed to delivered your product");
       }
     });
-  }, []);
+  };
+
+  const onLoadMore = () => {
+    let skip = Skip + Limit;
+
+    const variables = {
+      skip: skip,
+      limit: Limit,
+    };
+    getProducts(variables);
+  };
 
   const renderCards = Products.map((product, index) => {
     return (
@@ -63,7 +85,7 @@ function LandingPage() {
       <br />
       <br />
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <button>Load More</button>
+        <button onClick={onLoadMore}>Load More</button>
       </div>
     </div>
   );
