@@ -3,6 +3,7 @@ import axios from "axios";
 import { Icon, Row, Col, Card } from "antd";
 import ImageSlider from "../../utils/ImageSlider";
 import CheckBox from "./Sections/CheckBox";
+import RadioBox from "./Sections/RadioBox";
 
 const { Meta } = Card;
 
@@ -11,7 +12,8 @@ function LandingPage() {
   const [Products, setProducts] = useState([]);
   const [Skip, setSkip] = useState(0);
   const [Limit, setLimit] = useState(8);
-  const [PostSize, setPostSize] = useState(0); //PostSize state for showing load more button
+  const [PostSize, setPostSize] = useState(); //PostSize state for showing load more button
+  const [Filters, setFilters] = useState({ sizes: [], price: [] });
 
   useEffect(() => {
     //fetch product data
@@ -24,14 +26,27 @@ function LandingPage() {
     getProducts(variables);
   }, []);
 
+  const renderCards = Products.map((product, index) => {
+    return (
+      <Col lg={6} md={8} xs={24}>
+        <Card hoverable={true} cover={<ImageSlider images={product.images} />}>
+          <Meta title={product.title} description={`$${product.price}`} />
+        </Card>
+      </Col>
+    );
+  });
+
   const getProducts = (variables) => {
     axios.post("/api/product/getProducts", variables).then((response) => {
       if (response.data.success) {
-        setProducts([...Products, ...response.data.products]);
+        //Only adds more product when clicking the load more button
+        if (variables.loadMore) {
+          setProducts([...Products, ...response.data.products]);
+        } else {
+          setProducts(response.data.products);
+        }
 
         setPostSize(response.data.postSize);
-
-        console.log(response.data.products);
       } else {
         alert("Failed to delivered your product");
       }
@@ -44,23 +59,38 @@ function LandingPage() {
     const variables = {
       skip: skip,
       limit: Limit,
+      loadMore: true,
     };
     getProducts(variables);
 
     setSkip(skip);
   };
 
-  const renderCards = Products.map((product, index) => {
-    return (
-      <Col lg={6} md={8} xs={24}>
-        <Card hoverable={true} cover={<ImageSlider images={product.images} />}>
-          <Meta title={product.title} description={`$${product.price}`} />
-        </Card>
-      </Col>
-    );
-  });
+  const showFilteredResults = (filters) => {
+    const variables = {
+      skip: 0,
+      limit: Limit,
+      filters: filters,
+    };
 
-  const handleFilters = (filters, category) => {};
+    getProducts(variables); //get the products with the new filter state
+    setSkip(0);
+  };
+
+  //handles and displays the filters into category for the controller to filter
+  const handleFilters = (filters, category) => {
+    console.log(filters);
+    const newFilters = { ...Filters };
+    console.log(newFilters);
+
+    newFilters[category] = filters;
+
+    if (category === "price") {
+    }
+
+    showFilteredResults(newFilters);
+    setFilters(newFilters);
+  };
 
   return (
     <div style={{ width: "75%", margin: "3rem auto" }}>
@@ -71,7 +101,20 @@ function LandingPage() {
       </div>
 
       {/* Filter */}
-      <CheckBox handleFilters={(filters) => handleFilters(filters, "sizes")} />
+
+      <Row gutter={[16, 16]}>
+        <Col lg={12} xs={24}>
+          <CheckBox
+            handleFilters={(filters) => handleFilters(filters, "sizes")}
+          />
+        </Col>
+        <Col lg={12} xs={24}>
+          <RadioBox
+            handleFilters={(filters) => handleFilters(filters, "price")}
+          />
+        </Col>
+      </Row>
+
       {/*Search*/}
 
       {Products.length === 0 ? (
