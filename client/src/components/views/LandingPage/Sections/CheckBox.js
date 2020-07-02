@@ -1,36 +1,6 @@
 import React, { useState } from "react";
 import { Collapse, Checkbox } from "antd";
 const { Panel } = Collapse;
-const sizes = [
-  {
-    _id: 0,
-    size: "--",
-  },
-  {
-    _id: 1,
-    size: "XS",
-  },
-  {
-    _id: 2,
-    size: "S",
-  },
-  {
-    _id: 3,
-    size: "M",
-  },
-  {
-    _id: 4,
-    size: "L",
-  },
-  {
-    _id: 5,
-    size: "XL",
-  },
-  {
-    _id: 6,
-    size: "XXL",
-  },
-];
 
 function CheckBox(props) {
   const [Checked, setChecked] = useState([]);
@@ -50,7 +20,8 @@ function CheckBox(props) {
   };
 
   const renderCheckboxLists = () =>
-    sizes.map((value, index) => (
+    props.list &&
+    props.list.map((value, index) => (
       <React.Fragment key={index}>
         <Checkbox
           onChange={() => handleToggle(value._id)}

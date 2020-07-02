@@ -4,7 +4,8 @@ import { Icon, Row, Col, Card } from "antd";
 import ImageSlider from "../../utils/ImageSlider";
 import CheckBox from "./Sections/CheckBox";
 import RadioBox from "./Sections/RadioBox";
-
+import { sizes, price } from "./Sections/Data";
+import SearchFeature from "./Sections/SearchFeature";
 const { Meta } = Card;
 
 function LandingPage() {
@@ -13,6 +14,7 @@ function LandingPage() {
   const [Skip, setSkip] = useState(0);
   const [Limit, setLimit] = useState(8);
   const [PostSize, setPostSize] = useState(); //PostSize state for showing load more button
+  const [SearchTerm, setSearchTerm] = useState("");
   const [Filters, setFilters] = useState({ sizes: [], price: [] });
 
   useEffect(() => {
@@ -77,6 +79,19 @@ function LandingPage() {
     setSkip(0);
   };
 
+  const handlePrice = (value) => {
+    const data = price;
+    let array = [];
+
+    for (let key in data) {
+      if (data[key]._id === parseInt(value, 10)) {
+        array = data[key].array;
+      }
+    }
+
+    return array;
+  };
+
   //handles and displays the filters into category for the controller to filter
   const handleFilters = (filters, category) => {
     console.log(filters);
@@ -86,10 +101,28 @@ function LandingPage() {
     newFilters[category] = filters;
 
     if (category === "price") {
+      let priceValues = handlePrice(filters);
+
+      newFilters[category] = priceValues;
     }
 
+    console.log(newFilters);
     showFilteredResults(newFilters);
     setFilters(newFilters);
+  };
+
+  const updateSearchTerms = (newSearchTerm) => {
+    const variables = {
+      skip: 0,
+      limit: Limit,
+      filters: Filters,
+      searchTerm: newSearchTerm,
+    };
+
+    setSkip(0);
+    setSearchTerm(newSearchTerm);
+
+    getProducts(variables);
   };
 
   return (
@@ -105,17 +138,28 @@ function LandingPage() {
       <Row gutter={[16, 16]}>
         <Col lg={12} xs={24}>
           <CheckBox
+            list={sizes}
             handleFilters={(filters) => handleFilters(filters, "sizes")}
           />
         </Col>
         <Col lg={12} xs={24}>
           <RadioBox
+            list={price}
             handleFilters={(filters) => handleFilters(filters, "price")}
           />
         </Col>
       </Row>
 
       {/*Search*/}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          margin: "1rem auto",
+        }}
+      >
+        <SearchFeature refreshFunction={updateSearchTerms} />
+      </div>
 
       {Products.length === 0 ? (
         <div
