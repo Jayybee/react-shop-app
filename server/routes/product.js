@@ -79,8 +79,6 @@ router.post("/getProducts", (req, res) => {
     }
   }
 
-  console.log(term);
-
   if (term) {
     Product.find(findArgs)
       .find({ $text: { $search: term } })
@@ -107,6 +105,25 @@ router.post("/getProducts", (req, res) => {
           .json({ success: true, products, postSize: products.length });
       });
   }
+});
+
+//?id=${productId}&type=single
+router.get("/products_by_id", auth, (req, res) => {
+  //save product upload data from client-side into database
+
+  let type = req.query.type;
+  let productIds = req.query.id;
+
+  if (type === "array") {
+  }
+
+  //Finds the product info by pulling the product Id
+  Product.find({ _id: { $in: productIds } })
+    .populate("writer")
+    .exec((err, product) => {
+      if (err) return req.status(400).send(err);
+      return res.status(200).send(product);
+    });
 });
 
 module.exports = router;
