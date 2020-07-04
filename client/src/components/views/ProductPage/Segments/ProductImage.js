@@ -20,7 +20,6 @@ function ProductImage(props) {
     }
   }, [props.detail]);
 
-  console.log(props.detail);
   return <ImageGallery items={Images} />;
 }
 

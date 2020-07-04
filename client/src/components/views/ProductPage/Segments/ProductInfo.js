@@ -2,6 +2,9 @@ import React from "react";
 import { Button, Descriptions } from "antd";
 
 function ProductInfo(props) {
+  const addToCartFunction = () => {
+    props.addToCart(props.detail._id);
+  };
   return (
     <div>
       <Descriptions title="Product Info">
@@ -15,14 +18,19 @@ function ProductInfo(props) {
         <Descriptions.Item label="Description">
           {props.detail.description}
         </Descriptions.Item>
-        <br />
-        <br />
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button size="large" shape="round" type="danger" onClick>
-            Add to Cart
-          </Button>
-        </div>
       </Descriptions>
+      <br />
+      <br />
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <Button
+          size="large"
+          shape="round"
+          type="danger"
+          onClick={addToCartFunction}
+        >
+          Add to Cart
+        </Button>
+      </div>
     </div>
   );
 }
