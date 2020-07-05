@@ -70,18 +70,15 @@ router.get("/logout", auth, (req, res) => {
 });
 
 router.post("/addToCart", auth, (req, res) => {
-  User.find({ _id: req.user._id }, (err, userInfo) => {
+  User.findOne({ _id: req.user._id }, (err, userInfo) => {
     let duplicate = false;
 
-    console.log(userInfo);
-
-    //checks for duplicate object in cart
-    userInfo.cart.forEach((cartInfo) => {
-      if (cartInfo.id === req.query.productId) {
+    userInfo.cart.forEach((item) => {
+      if (item.id === req.query.productId) {
         duplicate = true;
       }
     });
-    //add duplicate to quantity
+
     if (duplicate) {
       User.findOneAndUpdate(
         { _id: req.user._id, "cart.id": req.query.productId },
