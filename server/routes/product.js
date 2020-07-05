@@ -114,7 +114,13 @@ router.get("/products_by_id", (req, res) => {
   let type = req.query.type;
   let productIds = req.query.id;
 
+  //maps over user cart items as productIds
   if (type === "array") {
+    let ids = req.query.id.split(",");
+    productIds = [];
+    productIds = ids.map((item) => {
+      return item;
+    });
   }
 
   //Finds the product info by pulling the product Id

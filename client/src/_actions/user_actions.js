@@ -5,6 +5,7 @@ import {
   AUTH_USER,
   LOGOUT_USER,
   ADD_TO_CART_USER,
+  GET_CART_ITEMS_USER,
 } from "./types";
 import { USER_SERVER } from "../components/Config.js";
 
@@ -59,6 +60,29 @@ export function addToCart(_id) {
 
   return {
     type: ADD_TO_CART_USER,
+    payload: request,
+  };
+}
+
+export function getCartItems(cartItems, userCart) {
+  const request = axios
+    .get(`/api/product/products_by_id?id=${cartItems}&type=array`)
+    .then((response) => {
+      //puts quantity from user cart state into response data for
+      //product detail quantity
+      userCart.forEach((cartItem) => {
+        response.data.forEach((productDetail, index) => {
+          if (cartItem.id === productDetail.id) {
+            response.data[index].quantity = cartItem.quantity;
+          }
+        });
+      });
+
+      return response.data;
+    });
+
+  return {
+    type: GET_CART_ITEMS_USER,
     payload: request,
   };
 }
