@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getCartItems } from "../../../_actions/user_actions";
+import { getCartItems, removeCartItem } from "../../../_actions/user_actions";
 import UserCardBlock from "./UserCardBlock";
 import { Result, Empty } from "antd";
 
@@ -8,6 +8,8 @@ function CartPage(props) {
   const dispatch = useDispatch();
 
   const [Total, setTotal] = useState(0);
+  const [ShowTotal, setShowTotal] = useState(false);
+  const [ShowSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
     //fetch the cart from userData state
@@ -35,33 +37,44 @@ function CartPage(props) {
     let total = 0;
 
     cartDetail.map((item) => {
-      console.log(props.user.userData.cart);
       total += parseInt(item.price, 10) * item.quantity;
     });
-    console.log(total);
+
     setTotal(total);
+    setShowTotal(true);
+  };
+
+  const removeFromCart = (productId) => {
+    dispatch(removeCartItem(productId)).then();
   };
 
   return (
     <div style={{ width: "85%", margin: "3rem auto" }}>
       <h1>My Cart </h1>
       <div>
-        <UserCardBlock products={props.user.cartDetail} />
-        <div style={{ marginTop: "3rem" }}>
-          <h2>Total: ${Total}</h2>
-        </div>
+        <UserCardBlock
+          products={props.user.cartDetail}
+          removeItem={removeFromCart}
+        />
 
-        <Result status="success" title="Successfully Purchased Items" />
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-          }}
-        >
-          <br /> <Empty description={false} /> <p>No Cart Items</p>
-        </div>
+        {ShowTotal ? (
+          <div style={{ marginTop: "3rem" }}>
+            <h2>Total: ${Total}</h2>
+          </div>
+        ) : ShowSuccess ? (
+          <Result status="success" title="Successfully Purchased Items" />
+        ) : (
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <br /> <Empty description={false} /> <p>No Cart Items</p>
+          </div>
+        )}
       </div>
     </div>
   );
