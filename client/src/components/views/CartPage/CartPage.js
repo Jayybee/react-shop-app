@@ -45,7 +45,13 @@ function CartPage(props) {
   };
 
   const removeFromCart = (productId) => {
-    dispatch(removeCartItem(productId)).then();
+    dispatch(removeCartItem(productId)).then(() => {
+      if (props.user.cartDetail.length <= 0) {
+        setShowTotal(false);
+      } else {
+        calcTotal(props.user.cartDetail);
+      }
+    });
   };
 
   return (
