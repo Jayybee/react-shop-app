@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getCartItems, removeCartItem } from "../../../_actions/user_actions";
+import {
+  getCartItems,
+  removeCartItem,
+  onSuccessBuy,
+} from "../../../_actions/user_actions";
 import UserCardBlock from "./UserCardBlock";
 import { Result, Empty } from "antd";
+import Paypal from "../../utils/Paypal";
+import Axios from "axios";
 
 function CartPage(props) {
   const dispatch = useDispatch();
@@ -54,6 +60,37 @@ function CartPage(props) {
     });
   };
 
+  const transactionSuccess = (data) => {
+    let variables = {
+      cartDetail: props.user.cartDetail,
+      paymentData: data,
+    };
+
+    Axios.post("/api/users/successBuy", variables).then((response) => {
+      if (response.data.success) {
+        setShowSuccess(true);
+        setShowTotal(false);
+
+        dispatch(
+          onSuccessBuy({
+            cart: response.data.cart,
+            cartDetail: response.data.cartDetail,
+          })
+        );
+      } else {
+        alert("Failed to Purchase Items");
+      }
+    });
+  };
+
+  const transactionError = () => {
+    console.log("Paypal error");
+  };
+
+  const transactionCancelled = () => {
+    console.log("Transaction cancelled");
+  };
+
   return (
     <div style={{ width: "85%", margin: "3rem auto" }}>
       <h1>My Cart </h1>
@@ -82,6 +119,15 @@ function CartPage(props) {
           </div>
         )}
       </div>
+
+      {ShowTotal && (
+        <Paypal
+          toPay={Total}
+          onSuccess={transactionSuccess}
+          transactionError={transactionError}
+          transactionCancelled={transactionCancelled}
+        />
+      )}
     </div>
   );
 }
