@@ -57,7 +57,7 @@ function LandingPage() {
 
         setPostSize(response.data.postSize);
       } else {
-        alert("Failed to delivered your product");
+        alert("You have been 404'd. Failed to load page.");
       }
     });
   };
@@ -136,7 +136,7 @@ function LandingPage() {
     <div style={{ width: "75%", margin: "3rem auto" }}>
       <div style={{ textAlign: "center" }}>
         <h2>
-          JayBee's Shop <Icon type="shop" />
+          JB's Headset Shop <Icon type="shop" />
         </h2>
       </div>
 

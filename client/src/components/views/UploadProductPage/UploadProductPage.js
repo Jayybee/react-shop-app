@@ -66,7 +66,7 @@ function UploadProductPage(props) {
         alert("Product posted!");
         props.history.push("/");
       } else {
-        alert("Failed to Upload Product :(");
+        alert("You have been 404'd. Failed to load page.");
       }
     });
   };
