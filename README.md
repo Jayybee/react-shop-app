@@ -1,5 +1,7 @@
 This is my shop app.
 
+# RUNNING LOCALLY
+
 To get started:
 
 1. Download or clone the repo.
